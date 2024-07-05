@@ -1,15 +1,37 @@
-import React from 'react'
-import list from '../../public/list.json'
+import React, { useEffect, useState } from 'react'
+// import list from '../../public/list.json'
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import Slider from "react-slick";
 import Cards from './Cards';
+import axios from 'axios';
 
 function Freebooks() {
-    const filterData = list.filter((data)=> data.category === "Free");
+    // const filterData = list.filter((data)=> data.category === "Free");
     // console.log(filterData);
+
+
+    const [book , setBook] = useState([]);
+
+    useEffect(()=>{
+        const getBookData = async() =>{
+            try {
+               const responce =  await axios.get("http://localhost:4001/nandapi/book");
+               const homeData = responce.data.filter((data)=> data.category === "Free");
+
+                console.log(homeData);
+                setBook(homeData);
+            } 
+            catch (error) {
+                console.log(error);
+            }
+        }
+
+        getBookData();
+    },[])
+
 
     var settings = {
         dots: true,
@@ -58,7 +80,7 @@ function Freebooks() {
         <div>
             <Slider {...settings}>
               {   
-                filterData.map((item)=>{
+                book.map((item)=>{
                   return  <Cards item={item} key={item.id}/>    
                 })
               }
